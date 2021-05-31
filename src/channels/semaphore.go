@@ -10,9 +10,9 @@ import (
 	"time"
 )
 
-func workSemaphore() {
+func workSemaphore(i int) {
 	time.Sleep(time.Second)
-	log.Print("Processing work")
+	log.Printf("Processing work %d", i)
 }
 
 func main() {
@@ -29,7 +29,7 @@ func main() {
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
 
-		go func() {
+		go func(i int) {
 			// each time a worker starts, take one out of the
 			// channel and start processing
 			// Once all items are taken out, it'll block and wait
@@ -43,8 +43,8 @@ func main() {
 				wg.Done()
 			}()
 
-			workSemaphore()
-		}()
+			workSemaphore(i)
+		}(i)
 	}
 
 	wg.Wait()
