@@ -1,0 +1,47 @@
+openapi: 3.0.0
+info:
+  title: OpenAPI Library Demo App
+  version: 0.0.1
+servers: [
+  {
+    "url": "http://localhost:8080",
+    "description": "local development server",
+  },
+]
+paths:
+  /books:
+    get:
+      responses:
+        "200":
+          description: get list of books
+    post:
+      responses:
+        "200":
+          description: get list of books
+        "400":
+          description: bad request, bad data
+        "409":
+          description: conflict
+  /books/{book-id}:
+    get:
+      responses:
+        "200":
+          description: get list of books
+  /users/:
+    get:
+      responses:
+        "200":
+          description: get list of books
+    post:
+      responses:
+        "200":
+          description: get list of books
+        "400":
+          description: bad request, bad data
+        "409":
+          description: conflict
+  /users/{user-id}:
+    get:
+      responses:
+        "200":
+          description: get list of books
