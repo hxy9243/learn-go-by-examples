@@ -130,8 +130,8 @@ func (s *DefaultApiService) GETUserBorrows(ctx context.Context) (ImplResponse, e
 	// TODO - update GETUserBorrows with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	//TODO: Uncomment the next line to return response Response(200, []User{}) or use other options such as http.Ok ...
-	//return Response(200, []User{}), nil
+	//TODO: Uncomment the next line to return response Response(200, []Borrow{}) or use other options such as http.Ok ...
+	//return Response(200, []Borrow{}), nil
 
 	return Response(http.StatusNotImplemented, nil), errors.New("GETUserBorrows method not implemented")
 }
@@ -141,14 +141,14 @@ func (s *DefaultApiService) GETUsers(ctx context.Context) (ImplResponse, error) 
 	// TODO - update GETUsers with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
-	//return Response(200, nil),nil
+	//TODO: Uncomment the next line to return response Response(200, []User{}) or use other options such as http.Ok ...
+	//return Response(200, []User{}), nil
 
 	return Response(http.StatusNotImplemented, nil), errors.New("GETUsers method not implemented")
 }
 
 // PATCHBookCopy -
-func (s *DefaultApiService) PATCHBookCopy(ctx context.Context) (ImplResponse, error) {
+func (s *DefaultApiService) PATCHBookCopy(ctx context.Context, book Book) (ImplResponse, error) {
 	// TODO - update PATCHBookCopy with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
@@ -174,8 +174,8 @@ func (s *DefaultApiService) PATCHUserBorrow(ctx context.Context) (ImplResponse, 
 	// TODO - update PATCHUserBorrow with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	//TODO: Uncomment the next line to return response Response(200, User{}) or use other options such as http.Ok ...
-	//return Response(200, User{}), nil
+	//TODO: Uncomment the next line to return response Response(200, Borrow{}) or use other options such as http.Ok ...
+	//return Response(200, Borrow{}), nil
 
 	return Response(http.StatusNotImplemented, nil), errors.New("PATCHUserBorrow method not implemented")
 }

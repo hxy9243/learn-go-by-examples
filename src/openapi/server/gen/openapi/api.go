@@ -54,7 +54,7 @@ type DefaultApiServicer interface {
 	GETUserBorrow(context.Context) (ImplResponse, error)
 	GETUserBorrows(context.Context) (ImplResponse, error)
 	GETUsers(context.Context) (ImplResponse, error)
-	PATCHBookCopy(context.Context) (ImplResponse, error)
+	PATCHBookCopy(context.Context, Book) (ImplResponse, error)
 	PATCHUser(context.Context) (ImplResponse, error)
 	PATCHUserBorrow(context.Context) (ImplResponse, error)
 	POSTBookCopies(context.Context, Copy) (ImplResponse, error)

@@ -4,7 +4,7 @@ info:
   version: 0.0.1
 servers:
 - description: local development server
-  url: http://localhost:8080
+  url: http://localhost:8000
 paths:
   /books:
     delete:
@@ -58,7 +58,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/book'
-          description: get list of books
+          description: create a new book
         "400":
           description: "bad request, bad data"
         "409":
@@ -82,7 +82,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/copy'
-          description: get one book based on item id
+          description: get all copies of this book in circulation
     post:
       operationId: POST-book-copies
       requestBody:
@@ -113,27 +113,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/book'
-          description: get one book based on item id
+          description: get one copy of a book
     patch:
       operationId: PATCH-book-copy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/book'
       responses:
         "200":
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/book'
-          description: get one book based on item id
+          description: update information on one book
   /users/:
     get:
       operationId: GET-users
       responses:
         "200":
-          description: get list of books
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/user'
+                type: array
+          description: get list of users
     post:
       operationId: POST-users
       responses:
         "200":
-          description: get list of books
+          description: get list of users
         "400":
           description: "bad request, bad data"
         "409":
@@ -148,12 +159,12 @@ paths:
       operationId: GET-user
       responses:
         "200":
-          description: get list of books
+          description: get one user information
     patch:
       operationId: PATCH-user
       responses:
         "200":
-          description: get list of books
+          description: update user information
   /users/{user-id}/borrows:
     get:
       operationId: GET-user-borrows
@@ -163,14 +174,14 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/user'
+                  $ref: '#/components/schemas/borrow'
                 type: array
           description: get list of borrows of this user
     post:
       operationId: POST-user-borrows
       responses:
         "201":
-          description: create a new borrow for this user
+          description: create a borrow for this user
   /users/{user-id}/borrows/{borrow-id}:
     get:
       operationId: GET-user-borrow
@@ -180,7 +191,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/borrow'
-          description: get list of books
+          description: get all the borrow information of this user
     patch:
       operationId: PATCH-user-borrow
       responses:
@@ -188,8 +199,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/user'
-          description: get list of books
+                $ref: '#/components/schemas/borrow'
+          description: update the borrow information of a user
 components:
   schemas:
     book:
