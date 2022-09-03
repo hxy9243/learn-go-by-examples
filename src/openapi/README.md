@@ -63,8 +63,9 @@ To contribute to this project, you'll need the following toolchains:
 
 Run `make doc` to generate HTML document in [API doc directory](server/gen/doc).
 
-## Generate
+## Code Generation
 
 After modifying the openAPI definition in [API directory](openapi/api), run
 `make gen` to regenerate the openapi Go source code.
 
+The results will be updated in [server/gen/openapi](server/gen/openapi).
