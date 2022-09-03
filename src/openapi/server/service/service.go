@@ -28,13 +28,12 @@ func NewBookServiceImpl() *BookServiceImpl {
 			},
 			Publisher: "Penguin Classics",
 			Published: time.Date(2018, time.June, 07, 0, 0, 0, 0, time.UTC),
-			Description: "The biting cold and the aching silence of the far North " +
-				"become an unforgettable backdrop for Jack London's vivid, " +
-				"rousing, superbly realistic wilderness adventure stories " +
-				"featuring the author's unique knowledge of the Yukon and " +
-				"the behavior of humans and animals facing nature at its cruelest.",
+			Description: "First published in 1903, The Call of the Wild is regarded as Jack London's " +
+				"masterpiece. Based on London's experiences as a gold prospector in the Canadian wilderness " +
+				"and his ideas about nature and the struggle for existence, The Call of the Wild is a tale " +
+				"about unbreakable spirit and the fight for survival in the frozen Alaskan Klondike.",
 			Genre: "fiction",
-			Tags:  []string{"fiction", "wilderness"},
+			Tags:  []string{"classic", "fiction", "wilderness", "adventure", "animals", "literature"},
 		},
 	}
 
@@ -45,6 +44,7 @@ func NewBookServiceImpl() *BookServiceImpl {
 	}
 }
 
+// Override the default "unimplemented" response of GETBooks for the path /books
 func (s *BookServiceImpl) GETBooks(ctx context.Context,
 	isbn string, title string, author string, genre string,
 ) (openapi.ImplResponse, error) {

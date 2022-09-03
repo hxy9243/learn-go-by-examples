@@ -4,9 +4,7 @@ GIT_USER := hxy9243
 GIT_REPO := go-example
 GO_SOURCE_DIR := openapi
 
-export GO_POST_PROCESS_FILE := "goimports -w"
-
-all: out/server
+all: build/server
 
 .PHONY:
 gen: api/*.yaml
@@ -26,6 +24,10 @@ doc: api/*.yaml
 		-i api/api.yaml -o server/gen/doc
 
 .PHONY:
-out/server: server/app/main.go server/service/*.go server/gen/openapi/*.go
-	mkdir -p out
+build/server: server/app/main.go server/service/*.go server/gen/openapi/*.go
+	mkdir -p build
 	go build -o $@ $<
+
+.PHONY:
+clean:
+	rm -rf build/
