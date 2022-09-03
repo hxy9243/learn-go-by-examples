@@ -1,0 +1,23 @@
+components:
+  schemas:
+    user:
+      type: object
+      title: User
+      properties:
+        id:
+          type: string
+          description: user id
+        birthdate:
+          type: string
+          description: date of birth for user
+          format: date-time
+        name:
+          type: string
+          description: name of user
+        occupation:
+          type: string
+          description: user's name
+        joined-date:
+          type: string
+          description: the date user become a member
+          format: date-time

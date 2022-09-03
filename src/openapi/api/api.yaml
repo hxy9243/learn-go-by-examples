@@ -11,28 +11,115 @@ servers: [
 paths:
   /books:
     get:
+      operationId: GET-books
+      parameters:
+        - $ref: "./book.yaml#/components/parameters/isbn"
+        - $ref: "./book.yaml#/components/parameters/title"
+        - $ref: "./book.yaml#/components/parameters/author"
+        - $ref: "./book.yaml#/components/parameters/genre"
       responses:
         "200":
-          description: get list of books
+          description: get list of books available
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./book.yaml#/components/schemas/book"
     post:
+      operationId: POST-books
+      requestBody:
+        required: true
+        content:
+            application/json:
+              schema:
+                $ref: "./book.yaml#/components/schemas/book"
       responses:
         "200":
           description: get list of books
+          content:
+            application/json:
+              schema:
+                $ref: "./book.yaml#/components/schemas/book"
         "400":
           description: bad request, bad data
         "409":
           description: conflict
+    delete:
+      operationId: DELETE-books
+      responses:
+        "204":
+          description: book removed from record
+
   /books/{book-id}:
     get:
+      operationId: GET-book
       responses:
         "200":
-          description: get list of books
+          description: get one book based on item id
+          content:
+            application/json:
+              schema:
+                $ref: "./book.yaml#/components/schemas/book"
+  /books/{book-id}/copies:
+    get:
+      operationId: GET-book-copies
+      responses:
+        "200":
+          description: get one book based on item id
+          content:
+            application/json:
+              schema:
+                $ref: "./book.yaml#/components/schemas/copy"
+    post:
+      operationId: POST-book-copies
+      requestBody:
+        required: true
+        description: to create a new book copy
+        content:
+          application/json:
+            schema:
+              $ref: "./book.yaml#/components/schemas/copy"
+      responses:
+        "201":
+          description: post a new copy of this book
+          content:
+            application/json:
+              schema:
+                $ref: "./book.yaml#/components/schemas/copy"
+  /books/{book-id}/copies/{copy-id}:
+    get:
+      operationId: GET-book-copy
+      responses:
+        "200":
+          description: get one book based on item id
+          content:
+            application/json:
+              schema:
+                $ref: "./book.yaml#/components/schemas/book"
+    patch:
+      operationId: PATCH-book-copy
+      responses:
+        "200":
+          description: get one book based on item id
+          content:
+            application/json:
+              schema:
+                $ref: "./book.yaml#/components/schemas/book"
+    delete:
+      operationId: DELETE-book-copy
+      responses:
+        "204":
+          description: this copy of the book has been removed
+
   /users/:
     get:
+      operationId: GET-users
       responses:
         "200":
           description: get list of books
     post:
+      operationId: POST-users
       responses:
         "200":
           description: get list of books
@@ -42,6 +129,54 @@ paths:
           description: conflict
   /users/{user-id}:
     get:
+      operationId: GET-user
       responses:
         "200":
           description: get list of books
+    patch:
+      operationId: PATCH-user
+      responses:
+        "200":
+          description: get list of books
+    delete:
+      operationId: DELETE-user
+      responses:
+        "204":
+          description: user has been removed
+
+  /users/{user-id}/borrows:
+    get:
+      operationId: GET-user-borrows
+      responses:
+        "200":
+          description: get list of borrows of this user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "./user.yaml#/components/schemas/user"
+    post:
+      operationId: POST-user-borrows
+      responses:
+        "201":
+          description: create a new borrow for this user
+  /users/{user-id}/borrows/{borrow-id}:
+    get:
+      operationId: GET-user-borrow
+      responses:
+        "200":
+          description: get list of books
+          content:
+            application/json:
+              schema:
+                $ref: "./borrow.yaml#/components/schemas/borrow"
+    patch:
+      operationId: PATCH-user-borrow
+      responses:
+        "200":
+          description: get list of books
+          content:
+            application/json:
+              schema:
+                $ref: "./user.yaml#/components/schemas/user"

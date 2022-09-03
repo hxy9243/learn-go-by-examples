@@ -1,0 +1,20 @@
+components:
+  schemas:
+    borrow:
+      properties:
+        id:
+          type: string
+          description: id of the borrow
+        user-id:
+          type: string
+        copy-id:
+          type: string
+        borrow-time:
+          type: string
+          format: date-time
+        due-time:
+          type: string
+          format: date-time
+        status:
+          type: string
+          enum: ["borrowing", "returned"]

@@ -1,0 +1,326 @@
+openapi: 3.0.0
+info:
+  title: OpenAPI Library Demo App
+  version: 0.0.1
+servers:
+- description: local development server
+  url: http://localhost:8080
+paths:
+  /books:
+    delete:
+      operationId: DELETE-books
+      responses:
+        "204":
+          description: book removed from record
+    get:
+      operationId: GET-books
+      parameters:
+      - description: the isbn number
+        in: query
+        name: isbn
+        schema:
+          type: string
+      - description: the title of the book
+        in: query
+        name: title
+        schema:
+          type: string
+      - description: the title of the book
+        in: query
+        name: author
+        schema:
+          type: string
+      - description: the title of the book
+        in: query
+        name: genre
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/book'
+                type: array
+          description: get list of books available
+    post:
+      operationId: POST-books
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/book'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/book'
+          description: get list of books
+        "400":
+          description: "bad request, bad data"
+        "409":
+          description: conflict
+  /books/{book-id}:
+    get:
+      operationId: GET-book
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/book'
+          description: get one book based on item id
+  /books/{book-id}/copies:
+    get:
+      operationId: GET-book-copies
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/copy'
+          description: get one book based on item id
+    post:
+      operationId: POST-book-copies
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/copy'
+        description: to create a new book copy
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/copy'
+          description: post a new copy of this book
+  /books/{book-id}/copies/{copy-id}:
+    delete:
+      operationId: DELETE-book-copy
+      responses:
+        "204":
+          description: this copy of the book has been removed
+    get:
+      operationId: GET-book-copy
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/book'
+          description: get one book based on item id
+    patch:
+      operationId: PATCH-book-copy
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/book'
+          description: get one book based on item id
+  /users/:
+    get:
+      operationId: GET-users
+      responses:
+        "200":
+          description: get list of books
+    post:
+      operationId: POST-users
+      responses:
+        "200":
+          description: get list of books
+        "400":
+          description: "bad request, bad data"
+        "409":
+          description: conflict
+  /users/{user-id}:
+    delete:
+      operationId: DELETE-user
+      responses:
+        "204":
+          description: user has been removed
+    get:
+      operationId: GET-user
+      responses:
+        "200":
+          description: get list of books
+    patch:
+      operationId: PATCH-user
+      responses:
+        "200":
+          description: get list of books
+  /users/{user-id}/borrows:
+    get:
+      operationId: GET-user-borrows
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/user'
+                type: array
+          description: get list of borrows of this user
+    post:
+      operationId: POST-user-borrows
+      responses:
+        "201":
+          description: create a new borrow for this user
+  /users/{user-id}/borrows/{borrow-id}:
+    get:
+      operationId: GET-user-borrow
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/borrow'
+          description: get list of books
+    patch:
+      operationId: PATCH-user-borrow
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user'
+          description: get list of books
+components:
+  schemas:
+    book:
+      example:
+        isbn: isbn
+        genre: genre
+        publisher: publisher
+        description: description
+        id: id
+        published: 2000-01-23T04:56:07.000+00:00
+        title: title
+        authors:
+        - name: name
+        - name: name
+        tags:
+        - tags
+        - tags
+      properties:
+        id:
+          description: the id of the book
+          type: string
+        title:
+          description: the id of the book
+          type: string
+        isbn:
+          description: ISBN book number
+          type: string
+        authors:
+          description: the id of the book
+          items:
+            $ref: '#/components/schemas/Author'
+          type: array
+        publisher:
+          description: name of the publisher
+          type: string
+        published:
+          description: time the book is published
+          format: date-time
+          type: string
+        description:
+          description: the description of the book
+          type: string
+        genre:
+          description: the genre of this book
+          type: string
+        tags:
+          description: the tags of the book
+          items:
+            type: string
+          type: array
+      title: Book
+      type: object
+    copy:
+      example:
+        book-id: book-id
+        id: id
+        status: borrowed
+      properties:
+        id:
+          description: id of the copy
+          type: string
+        book-id:
+          description: id of the book
+          type: string
+        status:
+          enum:
+          - borrowed
+          - available
+          - lost
+          type: string
+      title: BookCopy
+      type: object
+    user:
+      example:
+        birthdate: 2000-01-23T04:56:07.000+00:00
+        occupation: occupation
+        name: name
+        id: id
+        joined-date: 2000-01-23T04:56:07.000+00:00
+      properties:
+        id:
+          description: user id
+          type: string
+        birthdate:
+          description: date of birth for user
+          format: date-time
+          type: string
+        name:
+          description: name of user
+          type: string
+        occupation:
+          description: user's name
+          type: string
+        joined-date:
+          description: the date user become a member
+          format: date-time
+          type: string
+      title: User
+      type: object
+    borrow:
+      example:
+        user-id: user-id
+        copy-id: copy-id
+        id: id
+        borrow-time: 2000-01-23T04:56:07.000+00:00
+        due-time: 2000-01-23T04:56:07.000+00:00
+        status: borrowing
+      properties:
+        id:
+          description: id of the borrow
+          type: string
+        user-id:
+          type: string
+        copy-id:
+          type: string
+        borrow-time:
+          format: date-time
+          type: string
+        due-time:
+          format: date-time
+          type: string
+        status:
+          enum:
+          - borrowing
+          - returned
+          type: string
+    Author:
+      example:
+        name: name
+      properties:
+        name:
+          type: string
+      title: Author
+      type: object

@@ -1,0 +1,80 @@
+components:
+  parameters:
+    isbn:
+      name: isbn
+      in: query
+      description: the isbn number
+      schema:
+        type: string
+    title:
+      name: title
+      in: query
+      description: the title of the book
+      schema:
+        type: string
+    author:
+      name: author
+      in: query
+      description: the title of the book
+      schema:
+        type: string
+    genre:
+      name: genre
+      in: query
+      description: the title of the book
+      schema:
+        type: string
+  schemas:
+    book:
+      type: object
+      title: Book
+      properties:
+        id:
+          type: string
+          description: the id of the book
+        title:
+          type: string
+          description: the id of the book
+        isbn:
+          type: string
+          description: ISBN book number
+        authors:
+          type: array
+          description: the id of the book
+          items:
+            type: object
+            title: Author
+            properties:
+              name:
+                type: string
+        publisher:
+          type: string
+          description: name of the publisher
+        published:
+          type: string
+          description: time the book is published
+          format: date-time
+        description:
+          type: string
+          description: the description of the book
+        genre:
+          type: string
+          description: the genre of this book
+        tags:
+          type: array
+          description: the tags of the book
+          items:
+            type: string
+    copy:
+      type: object
+      title: BookCopy
+      properties:
+        id:
+          type: string
+          description: id of the copy
+        book-id:
+          type: string
+          description: id of the book
+        status:
+          type: string
+          enum: ["borrowed", "available", "lost"]
