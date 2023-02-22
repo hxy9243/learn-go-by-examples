@@ -2,7 +2,9 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -50,4 +52,12 @@ func (s *BookServiceImpl) GETBooks(ctx context.Context,
 ) (openapi.ImplResponse, error) {
 
 	return openapi.Response(http.StatusOK, s.Books), nil
+}
+
+// Override the default "unimplemented" response of GETBooks for the path /books
+func (s *BookServiceImpl) GETBook(ctx context.Context, bookid string, bookDetails []string, bookAuthor string) (openapi.ImplResponse, error) {
+	fmt.Printf("book details of %d long list: %s\n", len(bookDetails), strings.Join(bookDetails, ","))
+	fmt.Printf("book author: %s\n", bookAuthor)
+
+	return openapi.Response(http.StatusOK, s.Books[0]), nil
 }

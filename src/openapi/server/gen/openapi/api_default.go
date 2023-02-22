@@ -13,6 +13,8 @@ import (
 	"encoding/json"
 	"net/http"
 	"strings"
+
+	"github.com/gorilla/mux"
 )
 
 // DefaultApiController binds http requests to an api service and writes the service results to the http response
@@ -161,7 +163,12 @@ func (c *DefaultApiController) Routes() Routes {
 
 // DELETEBookCopy -
 func (c *DefaultApiController) DELETEBookCopy(w http.ResponseWriter, r *http.Request) {
-	result, err := c.service.DELETEBookCopy(r.Context())
+	params := mux.Vars(r)
+	bookIdParam := params["book-id"]
+
+	copyIdParam := params["copy-id"]
+
+	result, err := c.service.DELETEBookCopy(r.Context(), bookIdParam, copyIdParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -187,7 +194,10 @@ func (c *DefaultApiController) DELETEBooks(w http.ResponseWriter, r *http.Reques
 
 // DELETEUser -
 func (c *DefaultApiController) DELETEUser(w http.ResponseWriter, r *http.Request) {
-	result, err := c.service.DELETEUser(r.Context())
+	params := mux.Vars(r)
+	userIdParam := params["user-id"]
+
+	result, err := c.service.DELETEUser(r.Context(), userIdParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -200,7 +210,13 @@ func (c *DefaultApiController) DELETEUser(w http.ResponseWriter, r *http.Request
 
 // GETBook -
 func (c *DefaultApiController) GETBook(w http.ResponseWriter, r *http.Request) {
-	result, err := c.service.GETBook(r.Context())
+	params := mux.Vars(r)
+	query := r.URL.Query()
+	bookIdParam := params["book-id"]
+
+	bookDetailsParam := strings.Split(query.Get("book-details"), ",")
+	bookAuthorParam := query.Get("book-author")
+	result, err := c.service.GETBook(r.Context(), bookIdParam, bookDetailsParam, bookAuthorParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -213,7 +229,10 @@ func (c *DefaultApiController) GETBook(w http.ResponseWriter, r *http.Request) {
 
 // GETBookCopies -
 func (c *DefaultApiController) GETBookCopies(w http.ResponseWriter, r *http.Request) {
-	result, err := c.service.GETBookCopies(r.Context())
+	params := mux.Vars(r)
+	bookIdParam := params["book-id"]
+
+	result, err := c.service.GETBookCopies(r.Context(), bookIdParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -226,7 +245,12 @@ func (c *DefaultApiController) GETBookCopies(w http.ResponseWriter, r *http.Requ
 
 // GETBookCopy -
 func (c *DefaultApiController) GETBookCopy(w http.ResponseWriter, r *http.Request) {
-	result, err := c.service.GETBookCopy(r.Context())
+	params := mux.Vars(r)
+	bookIdParam := params["book-id"]
+
+	copyIdParam := params["copy-id"]
+
+	result, err := c.service.GETBookCopy(r.Context(), bookIdParam, copyIdParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -257,7 +281,10 @@ func (c *DefaultApiController) GETBooks(w http.ResponseWriter, r *http.Request) 
 
 // GETUser -
 func (c *DefaultApiController) GETUser(w http.ResponseWriter, r *http.Request) {
-	result, err := c.service.GETUser(r.Context())
+	params := mux.Vars(r)
+	userIdParam := params["user-id"]
+
+	result, err := c.service.GETUser(r.Context(), userIdParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -270,7 +297,12 @@ func (c *DefaultApiController) GETUser(w http.ResponseWriter, r *http.Request) {
 
 // GETUserBorrow -
 func (c *DefaultApiController) GETUserBorrow(w http.ResponseWriter, r *http.Request) {
-	result, err := c.service.GETUserBorrow(r.Context())
+	params := mux.Vars(r)
+	userIdParam := params["user-id"]
+
+	borrowIdParam := params["borrow-id"]
+
+	result, err := c.service.GETUserBorrow(r.Context(), userIdParam, borrowIdParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -283,7 +315,10 @@ func (c *DefaultApiController) GETUserBorrow(w http.ResponseWriter, r *http.Requ
 
 // GETUserBorrows -
 func (c *DefaultApiController) GETUserBorrows(w http.ResponseWriter, r *http.Request) {
-	result, err := c.service.GETUserBorrows(r.Context())
+	params := mux.Vars(r)
+	userIdParam := params["user-id"]
+
+	result, err := c.service.GETUserBorrows(r.Context(), userIdParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -309,6 +344,11 @@ func (c *DefaultApiController) GETUsers(w http.ResponseWriter, r *http.Request) 
 
 // PATCHBookCopy -
 func (c *DefaultApiController) PATCHBookCopy(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	bookIdParam := params["book-id"]
+
+	copyIdParam := params["copy-id"]
+
 	bookParam := Book{}
 	d := json.NewDecoder(r.Body)
 	d.DisallowUnknownFields()
@@ -320,7 +360,7 @@ func (c *DefaultApiController) PATCHBookCopy(w http.ResponseWriter, r *http.Requ
 		c.errorHandler(w, r, err, nil)
 		return
 	}
-	result, err := c.service.PATCHBookCopy(r.Context(), bookParam)
+	result, err := c.service.PATCHBookCopy(r.Context(), bookIdParam, copyIdParam, bookParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -333,7 +373,10 @@ func (c *DefaultApiController) PATCHBookCopy(w http.ResponseWriter, r *http.Requ
 
 // PATCHUser -
 func (c *DefaultApiController) PATCHUser(w http.ResponseWriter, r *http.Request) {
-	result, err := c.service.PATCHUser(r.Context())
+	params := mux.Vars(r)
+	userIdParam := params["user-id"]
+
+	result, err := c.service.PATCHUser(r.Context(), userIdParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -346,7 +389,12 @@ func (c *DefaultApiController) PATCHUser(w http.ResponseWriter, r *http.Request)
 
 // PATCHUserBorrow -
 func (c *DefaultApiController) PATCHUserBorrow(w http.ResponseWriter, r *http.Request) {
-	result, err := c.service.PATCHUserBorrow(r.Context())
+	params := mux.Vars(r)
+	userIdParam := params["user-id"]
+
+	borrowIdParam := params["borrow-id"]
+
+	result, err := c.service.PATCHUserBorrow(r.Context(), userIdParam, borrowIdParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -359,6 +407,9 @@ func (c *DefaultApiController) PATCHUserBorrow(w http.ResponseWriter, r *http.Re
 
 // POSTBookCopies -
 func (c *DefaultApiController) POSTBookCopies(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	bookIdParam := params["book-id"]
+
 	copyParam := Copy{}
 	d := json.NewDecoder(r.Body)
 	d.DisallowUnknownFields()
@@ -370,7 +421,7 @@ func (c *DefaultApiController) POSTBookCopies(w http.ResponseWriter, r *http.Req
 		c.errorHandler(w, r, err, nil)
 		return
 	}
-	result, err := c.service.POSTBookCopies(r.Context(), copyParam)
+	result, err := c.service.POSTBookCopies(r.Context(), bookIdParam, copyParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)
@@ -407,7 +458,10 @@ func (c *DefaultApiController) POSTBooks(w http.ResponseWriter, r *http.Request)
 
 // POSTUserBorrows -
 func (c *DefaultApiController) POSTUserBorrows(w http.ResponseWriter, r *http.Request) {
-	result, err := c.service.POSTUserBorrows(r.Context())
+	params := mux.Vars(r)
+	userIdParam := params["user-id"]
+
+	result, err := c.service.POSTUserBorrows(r.Context(), userIdParam)
 	// If an error occurred, encode the error with the status code
 	if err != nil {
 		c.errorHandler(w, r, err, &result)

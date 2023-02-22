@@ -27,7 +27,7 @@ func NewDefaultApiService() DefaultApiServicer {
 }
 
 // DELETEBookCopy -
-func (s *DefaultApiService) DELETEBookCopy(ctx context.Context) (ImplResponse, error) {
+func (s *DefaultApiService) DELETEBookCopy(ctx context.Context, bookId string, copyId string) (ImplResponse, error) {
 	// TODO - update DELETEBookCopy with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
@@ -49,7 +49,7 @@ func (s *DefaultApiService) DELETEBooks(ctx context.Context) (ImplResponse, erro
 }
 
 // DELETEUser -
-func (s *DefaultApiService) DELETEUser(ctx context.Context) (ImplResponse, error) {
+func (s *DefaultApiService) DELETEUser(ctx context.Context, userId string) (ImplResponse, error) {
 	// TODO - update DELETEUser with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
@@ -60,7 +60,7 @@ func (s *DefaultApiService) DELETEUser(ctx context.Context) (ImplResponse, error
 }
 
 // GETBook -
-func (s *DefaultApiService) GETBook(ctx context.Context) (ImplResponse, error) {
+func (s *DefaultApiService) GETBook(ctx context.Context, bookId string, bookDetails []string, bookAuthor string) (ImplResponse, error) {
 	// TODO - update GETBook with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
@@ -71,7 +71,7 @@ func (s *DefaultApiService) GETBook(ctx context.Context) (ImplResponse, error) {
 }
 
 // GETBookCopies -
-func (s *DefaultApiService) GETBookCopies(ctx context.Context) (ImplResponse, error) {
+func (s *DefaultApiService) GETBookCopies(ctx context.Context, bookId string) (ImplResponse, error) {
 	// TODO - update GETBookCopies with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
@@ -82,7 +82,7 @@ func (s *DefaultApiService) GETBookCopies(ctx context.Context) (ImplResponse, er
 }
 
 // GETBookCopy -
-func (s *DefaultApiService) GETBookCopy(ctx context.Context) (ImplResponse, error) {
+func (s *DefaultApiService) GETBookCopy(ctx context.Context, bookId string, copyId string) (ImplResponse, error) {
 	// TODO - update GETBookCopy with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
@@ -104,7 +104,7 @@ func (s *DefaultApiService) GETBooks(ctx context.Context, isbn string, title str
 }
 
 // GETUser -
-func (s *DefaultApiService) GETUser(ctx context.Context) (ImplResponse, error) {
+func (s *DefaultApiService) GETUser(ctx context.Context, userId string) (ImplResponse, error) {
 	// TODO - update GETUser with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
@@ -115,7 +115,7 @@ func (s *DefaultApiService) GETUser(ctx context.Context) (ImplResponse, error) {
 }
 
 // GETUserBorrow -
-func (s *DefaultApiService) GETUserBorrow(ctx context.Context) (ImplResponse, error) {
+func (s *DefaultApiService) GETUserBorrow(ctx context.Context, userId string, borrowId string) (ImplResponse, error) {
 	// TODO - update GETUserBorrow with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
@@ -126,7 +126,7 @@ func (s *DefaultApiService) GETUserBorrow(ctx context.Context) (ImplResponse, er
 }
 
 // GETUserBorrows -
-func (s *DefaultApiService) GETUserBorrows(ctx context.Context) (ImplResponse, error) {
+func (s *DefaultApiService) GETUserBorrows(ctx context.Context, userId string) (ImplResponse, error) {
 	// TODO - update GETUserBorrows with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
@@ -148,7 +148,7 @@ func (s *DefaultApiService) GETUsers(ctx context.Context) (ImplResponse, error) 
 }
 
 // PATCHBookCopy -
-func (s *DefaultApiService) PATCHBookCopy(ctx context.Context, book Book) (ImplResponse, error) {
+func (s *DefaultApiService) PATCHBookCopy(ctx context.Context, bookId string, copyId string, book Book) (ImplResponse, error) {
 	// TODO - update PATCHBookCopy with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
@@ -159,7 +159,7 @@ func (s *DefaultApiService) PATCHBookCopy(ctx context.Context, book Book) (ImplR
 }
 
 // PATCHUser -
-func (s *DefaultApiService) PATCHUser(ctx context.Context) (ImplResponse, error) {
+func (s *DefaultApiService) PATCHUser(ctx context.Context, userId string) (ImplResponse, error) {
 	// TODO - update PATCHUser with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
@@ -170,7 +170,7 @@ func (s *DefaultApiService) PATCHUser(ctx context.Context) (ImplResponse, error)
 }
 
 // PATCHUserBorrow -
-func (s *DefaultApiService) PATCHUserBorrow(ctx context.Context) (ImplResponse, error) {
+func (s *DefaultApiService) PATCHUserBorrow(ctx context.Context, userId string, borrowId string) (ImplResponse, error) {
 	// TODO - update PATCHUserBorrow with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
@@ -181,7 +181,7 @@ func (s *DefaultApiService) PATCHUserBorrow(ctx context.Context) (ImplResponse, 
 }
 
 // POSTBookCopies -
-func (s *DefaultApiService) POSTBookCopies(ctx context.Context, copy Copy) (ImplResponse, error) {
+func (s *DefaultApiService) POSTBookCopies(ctx context.Context, bookId string, copy Copy) (ImplResponse, error) {
 	// TODO - update POSTBookCopies with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
@@ -209,7 +209,7 @@ func (s *DefaultApiService) POSTBooks(ctx context.Context, book Book) (ImplRespo
 }
 
 // POSTUserBorrows -
-func (s *DefaultApiService) POSTUserBorrows(ctx context.Context) (ImplResponse, error) {
+func (s *DefaultApiService) POSTUserBorrows(ctx context.Context, userId string) (ImplResponse, error) {
 	// TODO - update POSTUserBorrows with the required logic for this service method.
 	// Add api_default_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
