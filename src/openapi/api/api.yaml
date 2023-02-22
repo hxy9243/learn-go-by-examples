@@ -54,6 +54,22 @@ paths:
   /books/{book-id}:
     get:
       operationId: GET-book
+      parameters:
+        - in: path
+          name: book-id
+          schema:
+            type: string
+          required: true
+        - in: query
+          name: book-details
+          schema:
+            type: array
+            items:
+              type: string
+        - in: query
+          name: book-author
+          schema:
+            type: string
       responses:
         "200":
           description: get one book based on item id
@@ -62,6 +78,12 @@ paths:
               schema:
                 $ref: "./book.yaml#/components/schemas/book"
   /books/{book-id}/copies:
+    parameters:
+      - in: path
+        name: book-id
+        schema:
+          type: string
+        required: true
     get:
       operationId: GET-book-copies
       responses:
@@ -88,6 +110,17 @@ paths:
               schema:
                 $ref: "./book.yaml#/components/schemas/copy"
   /books/{book-id}/copies/{copy-id}:
+    parameters:
+      - in: path
+        name: book-id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: copy-id
+        schema:
+          type: string
+        required: true
     get:
       operationId: GET-book-copy
       responses:
@@ -139,6 +172,12 @@ paths:
         "409":
           description: conflict
   /users/{user-id}:
+    parameters:
+      - in: path
+        name: user-id
+        schema:
+          type: string
+        required: true
     get:
       operationId: GET-user
       responses:
@@ -156,6 +195,12 @@ paths:
           description: user has been removed
 
   /users/{user-id}/borrows:
+    parameters:
+      - in: path
+        name: user-id
+        schema:
+          type: string
+        required: true
     get:
       operationId: GET-user-borrows
       responses:
@@ -173,6 +218,17 @@ paths:
         "201":
           description: create a borrow for this user
   /users/{user-id}/borrows/{borrow-id}:
+    parameters:
+      - in: path
+        name: user-id
+        schema:
+          type: string
+        required: true
+      - in: path
+        name: borrow-id
+        schema:
+          type: string
+        required: true
     get:
       operationId: GET-user-borrow
       responses:
