@@ -43,7 +43,7 @@ build/server: server/app/main.go server/service/*.go server/gen/openapi/*.go
 	mkdir -p build
 	go build -o $@ $<
 
-`build/client: client/main.go
+build/client: client/main.go
 	mkdir -p build
 	go build -o $@ $<
 
