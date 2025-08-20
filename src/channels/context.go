@@ -1,3 +1,7 @@
+// This file shows the efficiency of using context to communicate between
+// callers and callees, especially in network programs when you need to
+// cancel from the caller, or set a timeout for the work.
+
 package main
 
 import (

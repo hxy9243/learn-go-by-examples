@@ -18,6 +18,10 @@ func main() {
 	chans := []chan struct{}{}
 	log.Printf("Starting workers")
 
+	start := time.Now()
+
+	// launch 10 workers, they'll start when they each
+	// receive a "signal" through their readychannel
 	wg := &sync.WaitGroup{}
 	for i := 0; i < 10; i++ {
 		wg.Add(1)
@@ -39,7 +43,9 @@ func main() {
 	for _, ch := range chans {
 		ch <- struct{}{}
 	}
-
 	wg.Wait()
+
+	end := time.Now()
+	log.Printf("All work done in %v", end.Sub(start))
 	log.Printf("Finishing workers...")
 }

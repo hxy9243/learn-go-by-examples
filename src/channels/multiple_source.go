@@ -1,3 +1,10 @@
+// This is an example to demo that channel could be shared with
+// many senders. This could be useful when worker need to process
+// from a diverse source of inputs
+//
+// There are multiple notifiers in this example, and processor receives from all of
+// them and print their messages.
+
 package main
 
 import (

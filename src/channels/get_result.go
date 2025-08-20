@@ -1,9 +1,12 @@
 // This is as an example of receiving result from async functions
-// using golang channel
+// using golang channel.
+// Instead of packaging the result and returns in a Future, we can
+// send a channel to the calling function, and reads the result back.
 
 package main
 
 import (
+	"fmt"
 	"log"
 	"time"
 )
@@ -15,7 +18,7 @@ type Result struct {
 }
 
 // simulate very simple workload: sleep 1 second, return id + 1
-func work(resultChan chan Result, id int) {
+func worker(id int, resultChan chan Result) {
 	time.Sleep(2 * time.Second)
 
 	resultChan <- Result{Val: id + 1}
@@ -31,10 +34,13 @@ func main() {
 		// goroutines are started async, and may read variables
 		// in closure after the iteration is finished and index i is updated
 		go func(i int) {
-			work(resultChan, i)
+			worker(i, resultChan)
 		}(i)
 	}
 
+	fmt.Println("Start to receiving results...")
+
+	start := time.Now()
 	var results []int
 	for i := 0; i < 5; i++ {
 		res := <-resultChan
@@ -42,9 +48,10 @@ func main() {
 			log.Printf("Error: unable to get result for %d: %s", i, res.Err)
 			continue
 		}
-
 		results = append(results, res.Val)
 	}
-	log.Print("work finished")
-	log.Printf("results: %v", results)
+	end := time.Now()
+
+	log.Printf("Work finished after %v\n", end.Sub(start))
+	log.Printf("Results: %v", results)
 }
