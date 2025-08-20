@@ -24,3 +24,5 @@ go run consumer.go
 - `semaphore.go`: Shows how to use a buffered channel as a **semaphore** to limit the number of concurrent goroutines. A buffered channel is pre-filled with a certain number of empty structs. To start a new task, a goroutine must first receive a value from the channel. When the task is complete, it sends a value back to the channel, allowing another goroutine to proceed.
 - `signal.go`: Demonstrates how to handle **system signals** (e.g., `SIGINT`, `SIGTERM`) using channels. The `os/signal` package is used to create a channel that receives notifications of incoming signals. A worker goroutine can then listen on this channel and take appropriate action when a signal is received.
 -`timer.go`: Shows how to use `time.Ticker` and `time.Timer` to perform periodic tasks and handle timeouts. A worker goroutine uses a `time.Ticker` to perform a task at regular intervals. A `time.Timer` is used to set a timeout for the entire operation.
+- `concurrency_limiter.go`: This shows how to use channel as a sempaphore to limit the number of concurrent goroutines. It'll come handy when you want to limit the number of concurrent
+accesses to a shared resources.
