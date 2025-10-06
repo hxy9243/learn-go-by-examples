@@ -2,6 +2,7 @@ package ratelimit
 
 import (
 	"context"
+	"net/http"
 	"time"
 
 	"github.com/go-redis/redis/v8"
@@ -39,6 +40,7 @@ type RateLimiterClient struct {
 	window int64
 }
 
+// NewRateLimiterClient returns a new rate limiter client that uses Redis as backend for rate limiting
 func NewRateLimiterClient(redisConn *redis.Client, limit, window int64) *RateLimiterClient {
 	return &RateLimiterClient{
 		redisConn:   redisConn,
@@ -48,10 +50,13 @@ func NewRateLimiterClient(redisConn *redis.Client, limit, window int64) *RateLim
 	}
 }
 
-func (r *RateLimiterClient) Allow(ctx context.Context, key string) (bool, error) {
+// Allow checks if the request exceeds the limit
+func (rl *RateLimiterClient) Allow(ctx context.Context, key string) (bool, error) {
 	uniqueValue := uuid.New().String()
 
-	val, err := r.redisScript.Run(ctx, r.redisConn, []string{key, uniqueValue}, r.limit, r.window, time.Now().UnixMilli()).Result()
+	val, err := rl.redisScript.Run(
+		ctx, rl.redisConn, []string{key, uniqueValue}, rl.limit, rl.window, time.Now().UnixMilli(),
+	).Result()
 	if err != nil {
 		return false, err
 	}
@@ -60,4 +65,24 @@ func (r *RateLimiterClient) Allow(ctx context.Context, key string) (bool, error)
 		return true, nil
 	}
 	return false, nil
+}
+
+// Middleware returns an HTTP middleware for HTTP servers to check rate limits
+func (rl *RateLimiterClient) Middleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// get request client identifier from request header
+
+		allow, err := rl.Allow(r.Context(), r.RemoteAddr)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		if !allow {
+			w.WriteHeader(http.StatusTooManyRequests)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }
