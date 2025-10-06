@@ -2,6 +2,7 @@ package ratelimit
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"time"
 
@@ -32,21 +33,35 @@ const luaScript = `
 	end
 `
 
+type RateLimiterOptions struct {
+	Limit  int64
+	Window int64
+}
+
 type RateLimiterClient struct {
 	redisConn   *redis.Client
 	redisScript *redis.Script
-
-	limit  int64
-	window int64
+	options     RateLimiterOptions
 }
 
 // NewRateLimiterClient returns a new rate limiter client that uses Redis as backend for rate limiting
-func NewRateLimiterClient(redisConn *redis.Client, limit, window int64) *RateLimiterClient {
+func NewRateLimiterClient(addr string, options RateLimiterOptions) *RateLimiterClient {
+	redisConn := redis.NewClient(&redis.Options{
+		Addr: addr,
+	})
+
+	if options.Limit == 0 {
+		options.Limit = 100
+	}
+
+	if options.Window == 0 {
+		options.Window = 1
+	}
+
 	return &RateLimiterClient{
 		redisConn:   redisConn,
 		redisScript: redis.NewScript(luaScript),
-		limit:       limit,
-		window:      window,
+		options:     options,
 	}
 }
 
@@ -55,7 +70,7 @@ func (rl *RateLimiterClient) Allow(ctx context.Context, key string) (bool, error
 	uniqueValue := uuid.New().String()
 
 	val, err := rl.redisScript.Run(
-		ctx, rl.redisConn, []string{key, uniqueValue}, rl.limit, rl.window, time.Now().UnixMilli(),
+		ctx, rl.redisConn, []string{key, uniqueValue}, rl.options.Limit, rl.options.Window, time.Now().UnixMilli(),
 	).Result()
 	if err != nil {
 		return false, err
@@ -71,15 +86,23 @@ func (rl *RateLimiterClient) Allow(ctx context.Context, key string) (bool, error
 func (rl *RateLimiterClient) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// get request client identifier from request header
+		clientId := r.Header.Get("X-Client-Id")
+		if clientId == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]interface{}{"error": "X-Client-Id header is required", "status": http.StatusBadRequest})
+			return
+		}
 
-		allow, err := rl.Allow(r.Context(), r.RemoteAddr)
+		allow, err := rl.Allow(r.Context(), clientId)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]interface{}{"error": "Internal error", "status": http.StatusInternalServerError})
 			return
 		}
 
 		if !allow {
 			w.WriteHeader(http.StatusTooManyRequests)
+			json.NewEncoder(w).Encode(map[string]interface{}{"error": "Too many requests", "status": http.StatusTooManyRequests})
 			return
 		}
 
