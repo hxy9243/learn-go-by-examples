@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ratelimit-deployment
+  labels:
+    app: ratelimit
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: ratelimit
+  template:
+    metadata:
+      labels:
+        app: ratelimit
+    spec:
+      containers:
+      - name: ratelimit
+        image: hxy9243/example_ratelimit:0.0.1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        env:
+        - name: REDIS_ADDR
+          value: redis-cluster.redis.svc.cluster.local:6379
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-cluster
+              key: redis-password
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ratelimited-svc
+spec:
+  selector:
+    app: ratelimit
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
