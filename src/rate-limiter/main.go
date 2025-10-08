@@ -11,6 +11,7 @@ import (
 
 type ServerConfig struct {
 	RedisAddr       string
+	RedisPassword   string
 	RateLimit       int64
 	RateLimitWindow int64
 }
@@ -28,6 +29,8 @@ func StartNewExampleServer(config ServerConfig) error {
 	ratelimiter := ratelimit.NewRateLimiterClient(
 		config.RedisAddr,
 		ratelimit.RateLimiterOptions{
+			Password: config.RedisPassword,
+
 			Limit:  config.RateLimit,
 			Window: config.RateLimitWindow,
 		},
@@ -54,11 +57,13 @@ func getEnvAsInt(name string, fallback int) int {
 
 func main() {
 	redis_addr := getEnv("REDIS_ADDR", "localhost:6379")
+	redis_password := getEnv("REDIS_PASSWORD", "")
 	rate_limit := getEnvAsInt("RATE_LIMIT", 100)
 	rate_limit_window := getEnvAsInt("RATE_LIMIT_WINDOW", 1)
 
 	log.Fatal(StartNewExampleServer(ServerConfig{
 		RedisAddr:       redis_addr,
+		RedisPassword:   redis_password,
 		RateLimit:       int64(rate_limit),
 		RateLimitWindow: int64(rate_limit_window),
 	}))

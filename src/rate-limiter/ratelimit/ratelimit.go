@@ -37,6 +37,8 @@ const luaScript = `
 type RateLimiterOptions struct {
 	Limit  int64
 	Window int64
+
+	Password string
 }
 
 type RateLimiterClient struct {
@@ -48,7 +50,8 @@ type RateLimiterClient struct {
 // NewRateLimiterClient returns a new rate limiter client that uses Redis as backend for rate limiting
 func NewRateLimiterClient(addr string, options RateLimiterOptions) *RateLimiterClient {
 	redisConn := redis.NewClient(&redis.Options{
-		Addr: addr,
+		Addr:     addr,
+		Password: options.Password,
 	})
 
 	if options.Limit == 0 {
