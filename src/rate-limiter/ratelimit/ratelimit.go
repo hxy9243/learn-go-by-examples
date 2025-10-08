@@ -3,6 +3,7 @@ package ratelimit
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -88,6 +89,8 @@ func (rl *RateLimiterClient) Middleware(next http.Handler) http.Handler {
 		// get request client identifier from request header
 		clientId := r.Header.Get("X-Client-Id")
 		if clientId == "" {
+			log.Print("X-Client-Id header is required")
+
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]interface{}{"error": "X-Client-Id header is required", "status": http.StatusBadRequest})
 			return
@@ -95,12 +98,16 @@ func (rl *RateLimiterClient) Middleware(next http.Handler) http.Handler {
 
 		allow, err := rl.Allow(r.Context(), clientId)
 		if err != nil {
+			log.Printf("Error checking rate limiter: %s", err)
+
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]interface{}{"error": "Internal error", "status": http.StatusInternalServerError})
 			return
 		}
 
 		if !allow {
+			log.Printf("Too many requests from: %s", clientId)
+
 			w.WriteHeader(http.StatusTooManyRequests)
 			json.NewEncoder(w).Encode(map[string]interface{}{"error": "Too many requests", "status": http.StatusTooManyRequests})
 			return
