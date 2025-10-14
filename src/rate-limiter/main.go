@@ -10,10 +10,11 @@ import (
 )
 
 type ServerConfig struct {
-	RedisAddr       string
-	RedisPassword   string
-	RateLimit       int64
-	RateLimitWindow int64
+	RedisAddr         string
+	RedisSentinelAddr []string
+	RedisPassword     string
+	RateLimit         int64
+	RateLimitWindow   int64
 }
 
 // StartNewExampleServer creates an example server that uses rate limiter
@@ -27,12 +28,12 @@ func StartNewExampleServer(config ServerConfig) error {
 
 	// setup rate limiter
 	ratelimiter := ratelimit.NewRateLimiterClient(
-		config.RedisAddr,
 		ratelimit.RateLimiterOptions{
-			Password: config.RedisPassword,
-
-			Limit:  config.RateLimit,
-			Window: config.RateLimitWindow,
+			Addr:          config.RedisAddr,
+			SentinelAddrs: config.RedisSentinelAddr,
+			Password:      config.RedisPassword,
+			Limit:         config.RateLimit,
+			Window:        config.RateLimitWindow,
 		},
 	)
 
@@ -57,14 +58,16 @@ func getEnvAsInt(name string, fallback int) int {
 
 func main() {
 	redis_addr := getEnv("REDIS_ADDR", "localhost:6379")
+	redis_sentinel_addr := getEnv("REDIS_SENTINEL_ADDR", "localhost:26379")
 	redis_password := getEnv("REDIS_PASSWORD", "")
 	rate_limit := getEnvAsInt("RATE_LIMIT", 100)
 	rate_limit_window := getEnvAsInt("RATE_LIMIT_WINDOW", 1)
 
 	log.Fatal(StartNewExampleServer(ServerConfig{
-		RedisAddr:       redis_addr,
-		RedisPassword:   redis_password,
-		RateLimit:       int64(rate_limit),
-		RateLimitWindow: int64(rate_limit_window),
+		RedisAddr:         redis_addr,
+		RedisSentinelAddr: []string{redis_sentinel_addr},
+		RedisPassword:     redis_password,
+		RateLimit:         int64(rate_limit),
+		RateLimitWindow:   int64(rate_limit_window),
 	}))
 }

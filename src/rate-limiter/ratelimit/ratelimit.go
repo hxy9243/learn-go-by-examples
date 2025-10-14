@@ -38,7 +38,9 @@ type RateLimiterOptions struct {
 	Limit  int64
 	Window int64
 
-	Password string
+	Addr          string
+	SentinelAddrs []string
+	Password      string
 }
 
 type RateLimiterClient struct {
@@ -48,10 +50,12 @@ type RateLimiterClient struct {
 }
 
 // NewRateLimiterClient returns a new rate limiter client that uses Redis as backend for rate limiting
-func NewRateLimiterClient(addr string, options RateLimiterOptions) *RateLimiterClient {
-	redisConn := redis.NewClient(&redis.Options{
-		Addr:     addr,
-		Password: options.Password,
+func NewRateLimiterClient(options RateLimiterOptions) *RateLimiterClient {
+	redisConn := redis.NewFailoverClient(&redis.FailoverOptions{
+		MasterName:       options.Addr,
+		SentinelAddrs:    options.SentinelAddrs,
+		SentinelPassword: options.Password,
+		Password:         options.Password,
 	})
 
 	if options.Limit == 0 {
