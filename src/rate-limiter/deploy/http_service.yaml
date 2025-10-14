@@ -16,17 +16,19 @@ spec:
     spec:
       containers:
       - name: ratelimit
-        image: hxy9243/example_ratelimit:0.0.1
-        imagePullPolicy: IfNotPresent
+        image: hxy9243/example_ratelimit:0.0.8
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         env:
         - name: REDIS_ADDR
-          value: redis-cluster.redis.svc.cluster.local:6379
+          value: mymaster
+        - name: REDIS_SENTINEL_ADDR
+          value: redis.ratelimit.svc.cluster.local:26379
         - name: REDIS_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: redis-cluster
+              name: redis
               key: redis-password
 ---
 apiVersion: v1
@@ -38,5 +40,5 @@ spec:
     app: ratelimit
   ports:
     - protocol: TCP
-      port: 80
+      port: 8080
       targetPort: 8080
