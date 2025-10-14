@@ -8,6 +8,8 @@ sentinel:
   enabled: true
   masterService:
     enabled: true
+  # sentinel master name
+  masterSet: mymaster
 rbac:
   create: true
 serviceAccount:

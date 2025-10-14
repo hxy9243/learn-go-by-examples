@@ -36,6 +36,8 @@ kind: Service
 metadata:
   name: ratelimited-svc
 spec:
+  type: LoadBalancer
+  externalTrafficPolicy: Local
   selector:
     app: ratelimit
   ports:
