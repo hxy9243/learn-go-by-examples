@@ -1,0 +1,16 @@
+# Values for setting up redis sentinel for kubernetes installation
+# Setup auto master label with redis sentinel failover.
+#
+# See more at: https://github.com/bitnami/charts/blob/main/bitnami/redis/README.md
+
+architecture: replication
+sentinel:
+  enabled: true
+  masterService:
+    enabled: true
+rbac:
+  create: true
+serviceAccount:
+  create: true
+replica:
+  automountServiceAccountToken: true
