@@ -21,7 +21,7 @@ spec:
         ports:
         - containerPort: 8080
         env:
-        - name: REDIS_ADDR
+        - name: REDIS_MASTER_NAME
           value: mymaster
         - name: REDIS_SENTINEL_ADDR
           value: redis.ratelimit.svc.cluster.local:26379
