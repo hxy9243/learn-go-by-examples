@@ -74,13 +74,18 @@ func sendRequestsOneClient(clientId, url string, numRequests int, totalTime time
 				if err != nil {
 					fmt.Printf("Error sending request to %s: %v\n", url, err)
 				}
-				if resp.StatusCode == http.StatusOK {
+
+				switch resp.StatusCode {
+				case http.StatusOK:
 					resultChan <- Success
-				} else if resp.StatusCode == http.StatusTooManyRequests {
+				case http.StatusTooManyRequests:
 					resultChan <- Limited
-				} else {
+				case http.StatusInternalServerError:
+					resultChan <- Error
+				default:
 					resultChan <- Error
 				}
+
 			})
 		}
 
