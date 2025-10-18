@@ -22,7 +22,7 @@ const luaScript = `
 	-- remove keys that are out of window
 	redis.call('ZREMRANGEBYSCORE', key, 0, now - 1000 * window)
 
-	--
+	-- get the current count for the key
 	local current = redis.call('ZCARD', key)
 
 	if current < limit then
