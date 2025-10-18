@@ -18,14 +18,14 @@ const (
 	Total   = "Total"
 )
 
-func sendRequest(clientId, url string) (*http.Response, error) {
+func sendRequest(client *http.Client, clientId, url string) (*http.Response, error) {
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, err
 	}
 	req.Header.Set(HeaderKey, clientId)
 
-	resp, err := http.DefaultClient.Do(req)
+	resp, err := client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func randomString(n int) string {
 }
 
 // sendRequestsOneClient sends requests every second for determined amount of seconds
-func sendRequestsOneClient(clientId, url string, numRequests int, totalTime time.Duration) map[string]int {
+func sendRequestsOneClient(clientId, url string, numRequests int, tickerTime, totalTime time.Duration) map[string]int {
 	results := map[string]int{
 		Success: 0,
 		Limited: 0,
@@ -57,8 +57,10 @@ func sendRequestsOneClient(clientId, url string, numRequests int, totalTime time
 	resultChan := make(chan string)
 
 	startTime := time.Now()
-	ticker := time.NewTicker(time.Second)
+	ticker := time.NewTicker(tickerTime)
 	N := 0
+
+	client := &http.Client{}
 
 	for {
 		if time.Since(startTime) > totalTime {
@@ -68,9 +70,11 @@ func sendRequestsOneClient(clientId, url string, numRequests int, totalTime time
 		fmt.Printf("Sending parallel requests for %s: time %d, %d requests in parallel\n", clientId, N, numRequests)
 
 		wg := &sync.WaitGroup{}
+		groupStartTime := time.Now()
+
 		for i := 0; i < numRequests; i++ {
 			wg.Go(func() {
-				resp, err := sendRequest(clientId, url)
+				resp, err := sendRequest(client, clientId, url)
 				if err != nil {
 					fmt.Printf("Error sending request to %s: %v\n", url, err)
 				}
@@ -95,6 +99,7 @@ func sendRequestsOneClient(clientId, url string, numRequests int, totalTime time
 			results[Total]++
 		}
 		wg.Wait()
+		fmt.Printf("Client %s group total time: %s\n", clientId, time.Since(groupStartTime))
 
 		<-ticker.C
 	}
@@ -111,10 +116,13 @@ func main() {
 
 	wg := &sync.WaitGroup{}
 
+	http.DefaultTransport.(*http.Transport).MaxIdleConnsPerHost = 100
+
 	for i := 0; i < 10; i++ {
 		wg.Go(func() {
 			clientId := "clientId-" + randomString(10)
-			results := sendRequestsOneClient(clientId, *url, 150, 10*time.Second)
+			results := sendRequestsOneClient(clientId, *url,
+				10, time.Duration(0.1*float32(time.Second)), 20*time.Second)
 
 			fmt.Printf("Client %s results: %v\n", clientId, results)
 		})
